@@ -1,0 +1,110 @@
+<div *ngIf="asseturl != '' && mediainfo.Image && authenticator.route == 'authenticated'">
+    <table class="table">
+        <thead>
+            <tr><th>Image</th><th>Image Details</th></tr>
+        </thead>
+       
+    <tr>
+        <td>
+    
+        <img src={{asseturl}} width="50%" height="50%">
+        
+        </td>
+        <td>
+            <table class="table">
+                <tr>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        {{mediainfo.Name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Labels
+                    </td>
+                    <td>
+                        {{mediainfo.Label[0]}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Texts
+                    </td>
+                    <td>
+                        {{mediainfo.DetectedText[0]}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Size
+                    </td>
+                    <td>
+                        {{mediainfo.size}}
+                    </td>
+                </tr>
+            </table>
+        
+        </td>
+        </tr>
+    </table>
+    
+    
+    </div>
+    
+    <div *ngIf="asseturl != '' && mediainfo.Video">
+        <table class="table">
+            <thead>
+                <tr><th>Video</th><th>Video Details</th></tr>
+            </thead>
+           
+        <tr>
+            <td>
+        
+            <video src={{asseturl}} width="50%" height="50%" controls (timeupdate)="updatetime()" (play)="playing()"></video>
+            
+            </td>
+            <td>
+                <table class="table">
+                    <tr>
+                        <td>
+                            Codec
+                        </td>
+                        <td>
+                            {{mediainfo.Codec}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Format
+                        </td>
+                        <td>
+                            {{mediainfo.Format}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ColorRange
+                        </td>
+                        <td>
+                            {{mediainfo.Colorrange}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Duration
+                        </td>
+                        <td>
+                            {{mediainfo.Duration}}
+                        </td>
+                    </tr>
+                    
+                </table>
+            
+            </td>
+            </tr>
+        </table>
+        <h1>Elapased Time: {{elapsedtime*250}}</h1>
+        
+        </div>

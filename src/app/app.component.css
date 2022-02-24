@@ -1,0 +1,14 @@
+.flexWrapper{
+   display: flex;
+    height: 100%;
+    width: 100%;
+}
+.sidenav{
+    width: 200px;
+    height: 100px;
+    
+
+}
+.routerOutlet{
+    flex: 1;
+}

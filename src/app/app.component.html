@@ -1,0 +1,40 @@
+
+<div>
+<amplify-authenticator>
+  
+</amplify-authenticator>
+</div>
+
+<div class="flexWrapper">
+    <!--<img src="https://d2i4ffz2le2ujc.cloudfront.net/images/kid.jpg">Test Image-->
+   
+          <div class="sidenav">
+            
+            <ng-container *ngIf="authenticator.route === 'authenticated'">
+          <h1>welcome {{authenticator.user.username}}</h1>
+    <button mat-raised-button (click)="getfiles()">List Assets</button>
+    <br><br>
+
+    <button mat-raised-button (click) = "authenticator.signOut()">Sign Out</button>
+  </ng-container>
+          </div>
+    <div class="sidenav" style="height: 1000px; overflow-y: scroll" *ngIf="getfilesclicked === 'true'"><app-table [Assets]="assetsids"></app-table></div>
+    
+        
+        
+        
+        
+        <div class="routerOutlet">
+          <router-outlet></router-outlet>
+        </div>
+        
+      
+    
+    
+  
+
+
+
+
+ 
+</div>
