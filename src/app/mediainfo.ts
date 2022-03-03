@@ -14,3 +14,21 @@ Format:string,
 Colorrange:string,
 Duration:string
 }
+
+export interface addetails{
+    url:string
+    product:string
+    price:string
+}
+
+export interface adddetails_temp{
+    url:string
+    product:string
+    price:string
+        
+    }
+export interface mediaobject{
+    key:string
+    type:string
+    assetid:string
+}

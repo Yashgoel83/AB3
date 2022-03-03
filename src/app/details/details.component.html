@@ -1,4 +1,4 @@
-<div *ngIf="asseturl != '' && mediainfo.Image && authenticator.route == 'authenticated'">
+<!--<div *ngIf="asseturl != '' && mediainfo.Image && authenticator.route == 'authenticated'">
     <table class="table">
         <thead>
             <tr><th>Image</th><th>Image Details</th></tr>
@@ -51,9 +51,9 @@
     </table>
     
     
-    </div>
+    </div> -->
     
-    <div *ngIf="asseturl != '' && mediainfo.Video">
+    <!--<div *ngIf="asseturl != '' && mediainfo.Video">
         <table class="table">
             <thead>
                 <tr><th>Video</th><th>Video Details</th></tr>
@@ -107,4 +107,40 @@
         </table>
         <h1>Elapased Time: {{elapsedtime*250}}</h1>
         
+        </div> -->
+
+        <div class="card" *ngIf="asseturl != '' && mediainfo.Image  && authenticator.route == 'authenticated'">
+            <div class="card">
+            <img src={{asseturl}} width="50%" height="50%">
+            </div>
+            <div class="card">
+            <p class="price">Name :  {{mediainfo.Name}}</p>
+                      
+            </div>
+
         </div>
+
+        <div class="card" *ngIf="asseturl != '' && mediainfo.Video  && authenticator.route == 'authenticated'">
+            <div class="card">
+            <video src={{asseturl}} width="50%" height="50%" controls (timeupdate)="updatetime()" (play)="playing()"></video>
+            </div>
+            <div class="card">
+            <p class="price">Codec :  {{mediainfo.Codec}}</p>
+            <p class="price">Format : {{mediainfo.Format}}</p>
+            <p class="price">ColorRange : {{mediainfo.Colorrange}}</p>
+            <p class="price">Duration(ms) : {{mediainfo.Duration}}</p>
+            </div>
+
+        </div>
+
+       
+
+        <div class="card" *ngIf="authenticator.route == 'authenticated'">
+            <div class="card" *ngIf="product_temp.url !=''" style="width: 50%;">
+                <h1>{{product_temp.product}}</h1>
+                <p class="price">Price : Rs {{product_temp.price}} /-</p>
+                <p><button  [value]="product_temp.url" (click)="openadd()">click to buy</button></p>
+            </div>
+        </div>
+
+       

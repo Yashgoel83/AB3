@@ -3,9 +3,15 @@ import { Router, ActivatedRoute, Route, NavigationEnd } from '@angular/router';
 import {Amplify, API } from 'aws-amplify';
 import { concat, map } from 'rxjs';
 import awsexports from './../../aws-exports'
-import { Mediainfo } from '../mediainfo';
+import { adddetails_temp, addetails, Mediainfo } from '../mediainfo';
 import { time } from 'console';
 import { AuthenticatorService } from '@aws-amplify/ui-angular';
+import { AdserviceService } from '../adservice.service';
+
+import {DomSanitizer} from '@angular/platform-browser';
+import { url } from 'inspector';
+import { async } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-details',
@@ -22,6 +28,8 @@ export class DetailsComponent implements OnInit {
   public assetid
 
   public mediainfo:Mediainfo
+  public product:addetails
+  public product_temp:adddetails_temp
 
   imageurls:string[] = []
 
@@ -34,9 +42,13 @@ videolabelslots:Array<{slotnumber:number, labels:{}}>
 
 videol = new Map();
 
+addurl:string = ''
+
+found:boolean = false
 
 
-  constructor(public route:ActivatedRoute, private router:Router, public authenticator:AuthenticatorService) {
+
+  constructor(public adservice: AdserviceService,public route:ActivatedRoute, private router:Router, public authenticator:AuthenticatorService, private sanitizer:DomSanitizer) {
     this.navigationSubscription = this.router.events.subscribe((e:any)=>
       {
         if(e instanceof NavigationEnd)
@@ -49,7 +61,9 @@ videol = new Map();
   ngOnInit(): void {
     console.log("init called")
     this.getblankobject()
-    this.elapsedtime = 1
+    this.getblankproduct();
+    this.getblankproduct_temp()
+    this.elapsedtime = 0
     this.slotnumber = 0
 
   
@@ -57,6 +71,14 @@ videol = new Map();
     this.route.snapshot.params["id"]
     console.log(this.assetid)
     this.linkclicked_old(this.assetid)
+  }
+
+  getblankproduct_temp(){
+    this.product_temp = {
+      product:'',
+      price:'',
+      url:''
+    }
   }
 
   getblankobject(){
@@ -79,9 +101,17 @@ videol = new Map();
     
   }
 
+  getblankproduct(){
+    this.product = {
+      product:'',
+      url:'',
+      price:''
+    }
+  }
+
   linkclicked_old(event)
   {
-    console.log(event)
+    /*console.log(event)
     API.get('DataplaneAPI','/api/metadata/' + event,{"headers":{"Content-Type":"application/json"}}).then(
       results=> 
       {
@@ -109,6 +139,21 @@ videol = new Map();
       }
       
       )
+      */
+
+      this.mediainfo.Name= this.adservice.mediobject.key
+      this.asseturl = "https://d2nnj75gctg5a2.cloudfront.net/private/assets/" + event + '/' + this.adservice.mediobject.key
+      if(this.adservice.mediobject.type == "Image") 
+        {
+          this.mediainfo.Image = true
+          this.get_image_metadata(event)
+        }
+        if(this.adservice.mediobject.type == "Video") 
+        {
+          this.mediainfo.Video = true
+          this.get_video_metadata(event)
+        }
+
 
        
        
@@ -119,15 +164,19 @@ videol = new Map();
   }
 
   updatetime(){
-    this.elapsedtime++
+    
     console.log(this.elapsedtime*250)
     if((this.elapsedtime*250)%5000 == 0)
     {
-      console.log(this.videol.get(this.slotnumber)[0])
+      console.log(this.videol.get(this.slotnumber))
       console.log("call adservice")
+
+      this.getblankproduct()
+      this.get_ad(this.videol.get(this.slotnumber))
       this.slotnumber++
       
     }
+    this.elapsedtime++
   }
 
   get_video_metadata(assetid)
@@ -153,7 +202,7 @@ videol = new Map();
     labels.forEach(element => {
      
       
-      if(element["Label"]["Confidence"]>99)
+      if(element["Label"]["Confidence"]>95)
       {
 
         console.log(element["Label"]["Name"])
@@ -176,7 +225,7 @@ videol = new Map();
       
     });
 
-    //console.log(this.videol)
+    console.log(this.videol)
 
   }
 
@@ -190,10 +239,22 @@ videol = new Map();
         console.log(items)
         if(items.results["Labels"].length > 0)
         {
-          if(items.results["Labels"][0]["Confidence"] > 99)
+         /* if(items.results["Labels"][0]["Confidence"] > 95)
           {
               this.mediainfo.Label.push(items.results["Labels"][0]["Name"])
+              this.get_ad(items.results["Labels"][0]["Name"])
+          } */
+        let labels:string[] = []
+        items.results["Labels"].forEach(element => {
+          if(element["Confidence"] > 95)
+          {
+            labels.push(element["Name"])
           }
+          
+        });
+
+        this.get_ad(labels)          
+        
         }
       })
       API.get('DataplaneAPI','/api/metadata/'+ assetid + '/textDetection','').then(items=>
@@ -208,6 +269,60 @@ videol = new Map();
           }
         })
 
+  }
+
+  get_ad(product)
+  {
+    console.log(product)
+    this.found = false;
+    product.forEach(element => {
+
+     
+    
+      API.get('DataplaneAPI','/api/search?q='+ element,'').then(items=>
+        {
+          console.log(items.hits["total"].value)
+          if(items.hits["total"].value > 0 && this.product.product === '')
+          {
+            
+            console.log(items.hits["hits"][0]["_source"].url)
+            this.addurl = items.hits["hits"][0]["_source"].url
+            this.product.price = items.hits["hits"][0]["_source"].price
+            this.product.url = items.hits["hits"][0]["_source"].url
+            this.product.product = items.hits["hits"][0]["_source"].product
+            this.product_temp = this.product
+            this.found = true
+          }
+      
+        
+      
+      
+    });
+    
+
+  
+
+   /* API.get('DataplaneAPI','/api/search?q='+ product,'').then(items=>
+      {
+        console.log(items.hits["total"].value)
+        if(items.hits["total"].value > 0)
+        {
+          this.getblankproduct()
+          console.log(items.hits["hits"][0]["_source"].url)
+          this.addurl = items.hits["hits"][0]["_source"].url
+          this.product.price = items.hits["hits"][0]["_source"].price
+          this.product.url = items.hits["hits"][0]["_source"].url
+          this.product.product = items.hits["hits"][0]["_source"].product
+        }
+        
+      }) */
+
+  })
+}
+
+  openadd()
+  {
+    window.open(this.product.url, "_blank")
   }
  
   

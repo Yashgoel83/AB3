@@ -1,9 +1,10 @@
 
 <div *ngIf="asseturl == ''">
-    <table class="table table-striped" cellspacing="0">
-        <thead>Assets</thead>
-        <tr *ngFor="let asset of imageurls">
-            <td><button (click)="linkclicked(asset)">{{asset}}></button><td>
+    
+    <table>
+        <thead class="thead">Assets</thead>
+        <tr *ngFor="let asset of Assets">
+            <td><button (click)="linkclicked(asset)">{{asset["assetID"]}} : {{asset["key"]}}</button><td>
         </tr>
     </table>
 

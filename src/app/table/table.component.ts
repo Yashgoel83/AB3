@@ -6,6 +6,7 @@ import awsexports from './../../aws-exports'
 import { Mediainfo } from '../mediainfo';
 import { time } from 'console';
 import { DetailsComponent } from '../details/details.component';
+import { AdserviceService } from '../adservice.service';
 
 @Component({
   selector: 'app-table',
@@ -37,7 +38,7 @@ videol = new Map();
 
 
 
-constructor(public route:ActivatedRoute, public router:Router) { 
+constructor(public route:ActivatedRoute, public router:Router, public adservice:AdserviceService) { 
   Amplify.configure(awsexports)
 }
 
@@ -87,10 +88,13 @@ ngOnInit(): void {
       })
   }
 
+  
+
   linkclicked(event)
   {
-    
-    this.router.navigate(['details',event])
+    this.adservice.empty_mediaobject()
+    this.adservice.setmediaobject(event)
+    this.router.navigate(['details',event["assetID"]])
     
   
   }

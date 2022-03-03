@@ -10,7 +10,12 @@ import { VideosComponentComponent } from './videos-component/videos-component.co
 import { TableComponent } from './table/table.component';
 import { DetailsComponent } from './details/details.component';
 import {MatButtonModule} from '@angular/material/button';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AddisplayComponent } from './addisplay/addisplay.component';
+import { SafePipe } from './safe.pipe';
+import { FormsModule } from '@angular/forms';
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { DialogComponent } from './dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +23,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations'
     ImagesComponentComponent,
     VideosComponentComponent,
     TableComponent,
-    DetailsComponent
+    DetailsComponent,
+    AddisplayComponent,
+    SafePipe,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
@@ -26,10 +34,14 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations'
   
     AmplifyAuthenticatorModule,
   
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    FormsModule,
+    MatDialog
   ],
   exports:[
-    MatButtonModule
+    MatButtonModule,
+    FormsModule,
+    MatDialog
   ],
   providers: [],
   bootstrap: [AppComponent]

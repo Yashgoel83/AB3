@@ -12,13 +12,31 @@
             
             <ng-container *ngIf="authenticator.route === 'authenticated'">
           <h1>welcome {{authenticator.user.username}}</h1>
-    <button mat-raised-button (click)="getfiles()">List Assets</button>
-    <br><br>
+    <button class="button" mat-raised-button (click) = "authenticator.signOut()">Sign Out</button>
+    <button class="button" mat-raised-button (click)="getfiles()" style="margin-top: 5px;">List Assets</button>
+    <p style="Color:black;margin-top:5px;">Upload a file to process</p>
+    <input class="button" type="file" placeholder="Upload File" (change)="uploadfiles($event)" style="margin-top: 5px;"/>
+    
+    <div *ngIf="fileuploaded" style="margin-top: 5px;">
+      <p style="color: green;">File Uploaded</p>
+      <select [(ngModel)]="selectedworkflow" class="button" >
+      <option style="background-color: darkorange;"*ngFor="let workflow of workflows" [value]="workflow">{{workflow}}</option>
+      </select>
+    <button class="button" mat-raised-button (click)="process()" >Run Workflow</button>
+    </div>
+    <div *ngIf="jobId !== ''" class="button">
+      <p>AssetId: {{AssetId}}</p>
+      <button mat-raised-button (click)="getjobstatus()">Get Job Status</button>
+      <p>Job Status : {{jobStatus}}</p>
+    </div>
+    
 
-    <button mat-raised-button (click) = "authenticator.signOut()">Sign Out</button>
+    
   </ng-container>
           </div>
-    <div class="sidenav" style="height: 1000px; overflow-y: scroll" *ngIf="getfilesclicked === 'true'"><app-table [Assets]="assetsids"></app-table></div>
+    <div class="sidenav" style="overflow-y: scroll" *ngIf="getfilesclicked === 'true' && authenticator.route === 'authenticated'">
+      <app-table [Assets]="assetsids"></app-table>
+    </div>
     
         
         
