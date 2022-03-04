@@ -6,9 +6,13 @@ import { VideosComponentComponent } from './videos-component/videos-component.co
 import { Router, ActivatedRoute } from '@angular/router';
 import { AdserviceService } from './adservice.service';
 import { FormsModule } from '@angular/forms';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { LoaderComponent } from './loader/loader.component';
+
 
 import awsexports from './../aws-exports';import { concat } from 'rxjs';
 import { config } from 'process';
+import { MatDialog } from '@angular/material/dialog';
 []
 
 @Component({
@@ -27,8 +31,10 @@ export class AppComponent implements OnInit {
   jobId = ''
   jobStatus = ''
   AssetId = ''
+  showprogressbar = false
+  mediaType = ''
 
-  constructor(public authenticator: AuthenticatorService, public router: Router, public route:ActivatedRoute, public adservice:AdserviceService) {
+  constructor(public loader:MatDialog,public authenticator: AuthenticatorService, public router: Router, public route:ActivatedRoute, public adservice:AdserviceService) {
     Amplify.configure(awsexports);
   }
 
@@ -39,6 +45,8 @@ export class AppComponent implements OnInit {
   this.jobId = ''
   this.jobStatus = ''
   this.AssetId = ''
+  this.showprogressbar = false
+
     API.get('ControlPlaneAPI','/api/workflow',{"headers":{"Content-Type":"application/json"}}).then(workflow=>{
       if(workflow.length > 0)
       {
@@ -67,6 +75,8 @@ export class AppComponent implements OnInit {
       console.log(items)
       return items
     }) */
+
+this.loader.open(LoaderComponent)
 this.assetsids = []
 API.get('DataplaneAPI','/api/metadata/',{"headers":{"Content-Type":"application/json"}}).then(results=> 
   {
@@ -79,6 +89,8 @@ API.get('DataplaneAPI','/api/metadata/',{"headers":{"Content-Type":"application/
     })
     console.log(this.assetsids)
     this.getfilesclicked = "true"
+    
+    this.loader.closeAll()
     
      
    });
@@ -94,13 +106,14 @@ API.get('DataplaneAPI','/api/metadata/',{"headers":{"Content-Type":"application/
     let storage = Storage.configure("aws_user_files_s3_bucket")
     console.log(event.srcElement.files[0].name)
     this.s3key = "public/" + event.srcElement.files[0].name
+    this.loader.open(LoaderComponent)
     let response = await Storage.put(event.srcElement.files[0].name,event.srcElement.files[0])
       
     if(response != undefined)
     {
       console.log(response.key)
       this.fileuploaded = true
-     
+      this.loader.closeAll()
     }
 
    
@@ -113,12 +126,23 @@ API.get('DataplaneAPI','/api/metadata/',{"headers":{"Content-Type":"application/
     console.log(this.selectedworkflow)
     let body = {}
     let Media = {}
+    if(this.mediaType == "Image"){
     Media = {
       "Image": {
         "S3Bucket":awsexports.aws_user_files_s3_bucket,
         "S3Key": this.s3key
       }
+    }}
+    if(this.mediaType == "Video")
+    {
+      Media = {
+        "Video": {
+          "S3Bucket":awsexports.aws_user_files_s3_bucket,
+          "S3Key": this.s3key
+        }
+
     }
+  }
     body = {
       "Name":this.selectedworkflow,
       "Input": {
@@ -127,22 +151,26 @@ API.get('DataplaneAPI','/api/metadata/',{"headers":{"Content-Type":"application/
     }
 
     console.log(body)
+    this.loader.open(LoaderComponent)
     API.post('ControlPlaneAPI','/api/workflow/execution',{"headers":{"Content-Type":"application/json"}, "body" : body}).then(response=>
       {
         console.log(response.AssetId)
         console.log(response.Id)
         this.AssetId = response.AssetId
         this.jobId = response.Id
+        
+        this.loader.closeAll()
       })
   }
 
   getjobstatus()
   {
+    this.loader.open(LoaderComponent)
     API.get('ControlPlaneAPI','/api/workflow/execution/' + this.jobId,'').then(jobresponse=>
       {
         console.log(jobresponse.Status)
         this.jobStatus = jobresponse.Status
-
+        this.loader.closeAll()
       })
   }
 

@@ -109,26 +109,56 @@
         
         </div> -->
 
-        <div class="card" *ngIf="asseturl != '' && mediainfo.Image  && authenticator.route == 'authenticated'">
-            <div class="card">
-            <img src={{asseturl}} width="50%" height="50%">
+        <div class="container" *ngIf="asseturl != '' && mediainfo.Image  && authenticator.route == 'authenticated'">
+            <div class="row">
+                <div class="card col-md-6">
+                    <img src={{asseturl}} class="media">
+                </div>
+                <div class="card col-md-6">
+                    <p class="price">Name :  {{mediainfo.Name}}</p>
+                   
+                              
+                </div>
+               
+            
             </div>
-            <div class="card">
-            <p class="price">Name :  {{mediainfo.Name}}</p>
-                      
-            </div>
+           
 
+       
+            <div class="row">
+                
+                <div class=" col-md-6">
+                    <button value="labeldetection" (click)="opendialog()">Show Detected Labels</button>
+                    <button value="test" (click)="deleteasset()">Delete Asset</button>
+                    <p *ngIf="deleted" style="color: red;">Asset Deleted</p>
+                </div>
+            </div>
+           
         </div>
+       
 
-        <div class="card" *ngIf="asseturl != '' && mediainfo.Video  && authenticator.route == 'authenticated'">
-            <div class="card">
-            <video src={{asseturl}} width="50%" height="50%" controls (timeupdate)="updatetime()" (play)="playing()"></video>
+        <div class="container" *ngIf="asseturl != '' && mediainfo.Video  && authenticator.route == 'authenticated'">
+            <div class="row">
+                <div class="card col-md-6">
+                    <video src={{asseturl}} class="media" controls (timeupdate)="updatetime()" (play)="playing()"></video>
+                </div>
+                <div class="card col-md-6">
+                    <p class="price">Codec :  {{mediainfo.Codec}}</p>
+                    <p class="price">Format : {{mediainfo.Format}}</p>
+                    <p class="price">ColorRange : {{mediainfo.Colorrange}}</p>
+                    <p class="price">Duration(ms) : {{mediainfo.Duration}}</p>
+                </div>
+           
             </div>
-            <div class="card">
-            <p class="price">Codec :  {{mediainfo.Codec}}</p>
-            <p class="price">Format : {{mediainfo.Format}}</p>
-            <p class="price">ColorRange : {{mediainfo.Colorrange}}</p>
-            <p class="price">Duration(ms) : {{mediainfo.Duration}}</p>
+
+            <div class="row">
+              
+                <div class=" col-md-6">
+                    <button class="button" value="labeldetection" (click)="opendialog()">Show Detected Labels</button>
+                    <button value="test" (click)="deleteasset()">Delete Asset</button>
+                    <p *ngIf="deleted" style="color: red;">Asset Deleted</p>
+                </div>
+           
             </div>
 
         </div>

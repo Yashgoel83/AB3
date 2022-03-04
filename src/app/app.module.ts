@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common'
 
 import { AmplifyAuthenticatorModule } from '@aws-amplify/ui-angular';
 
@@ -14,8 +15,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AddisplayComponent } from './addisplay/addisplay.component';
 import { SafePipe } from './safe.pipe';
 import { FormsModule } from '@angular/forms';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MatDialogModule, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatProgressBarModule} from '@angular/material/progress-bar'
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner'
 import { DialogComponent } from './dialog/dialog.component';
+import { LoaderComponent } from './loader/loader.component';
+
+
 
 @NgModule({
   declarations: [
@@ -26,7 +32,8 @@ import { DialogComponent } from './dialog/dialog.component';
     DetailsComponent,
     AddisplayComponent,
     SafePipe,
-    DialogComponent
+    DialogComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -36,12 +43,17 @@ import { DialogComponent } from './dialog/dialog.component';
   
     NoopAnimationsModule,
     FormsModule,
-    MatDialog
+    MatDialogModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    CommonModule
   ],
   exports:[
     MatButtonModule,
     FormsModule,
-    MatDialog
+    MatDialogModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

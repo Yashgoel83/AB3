@@ -1,0 +1,15 @@
+.thead{
+
+    border: none;
+        outline: 0;
+        color: white;
+        background-color: #000;
+        text-align: center;
+        cursor: pointer;
+        width: 100%;
+        font-size: 18;
+        height: 50px;
+        position: sticky;
+        top: 0;
+    }
+    

@@ -14,11 +14,19 @@
           <h1>welcome {{authenticator.user.username}}</h1>
     <button class="button" mat-raised-button (click) = "authenticator.signOut()">Sign Out</button>
     <button class="button" mat-raised-button (click)="getfiles()" style="margin-top: 5px;">List Assets</button>
+    
+    <mat-progress-spinner mode="indeterminate" *ngIf="showprogressbar"></mat-progress-spinner>
     <p style="Color:black;margin-top:5px;">Upload a file to process</p>
     <input class="button" type="file" placeholder="Upload File" (change)="uploadfiles($event)" style="margin-top: 5px;"/>
     
     <div *ngIf="fileuploaded" style="margin-top: 5px;">
       <p style="color: green;">File Uploaded</p>
+      <p style="Color:black;margin-top:5px;">Select Media Type</p>
+      <select [(ngModel)]="mediaType" class="button">
+        <option style="background-color: darkorange;" value="Image">Image</option>
+        <option style="background-color: darkorange;" value="Video">Video</option>
+      </select>
+      <p style="Color:black;margin-top:5px;">Select Workflow</p>
       <select [(ngModel)]="selectedworkflow" class="button" >
       <option style="background-color: darkorange;"*ngFor="let workflow of workflows" [value]="workflow">{{workflow}}</option>
       </select>

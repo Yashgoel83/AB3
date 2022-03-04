@@ -12,6 +12,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import { url } from 'inspector';
 import { async } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-details',
@@ -45,10 +46,11 @@ videol = new Map();
 addurl:string = ''
 
 found:boolean = false
+deleted:boolean = false
 
 
 
-  constructor(public adservice: AdserviceService,public route:ActivatedRoute, private router:Router, public authenticator:AuthenticatorService, private sanitizer:DomSanitizer) {
+  constructor(public dialog:MatDialog,public adservice: AdserviceService,public route:ActivatedRoute, private router:Router, public authenticator:AuthenticatorService, private sanitizer:DomSanitizer) {
     this.navigationSubscription = this.router.events.subscribe((e:any)=>
       {
         if(e instanceof NavigationEnd)
@@ -65,10 +67,12 @@ found:boolean = false
     this.getblankproduct_temp()
     this.elapsedtime = 0
     this.slotnumber = 0
+    this.videol.clear()
 
   
     this.assetid = this.route.snapshot.url[1].path
     this.route.snapshot.params["id"]
+    this.deleted = false
     console.log(this.assetid)
     this.linkclicked_old(this.assetid)
   }
@@ -188,15 +192,40 @@ found:boolean = false
         this.mediainfo.Format = items.results["VideoMetadata"]["Format"]
         this.mediainfo.Colorrange = items.results["VideoMetadata"]["ColorRange"]
         this.mediainfo.Duration = items.results["VideoMetadata"]["DurationMillis"];
-        if(items.results["Labels"].length > 0) this.set_slots_labels(items.results["Labels"])
+        console.log(items.cursor)
+        if(items.cursor === undefined || items.cursor === null ) {
+        if(items.results["Labels"].length > 0) this.set_slots_labels(items.results["Labels"]) }
+        else{
+          this.set_slots_labels(items.results["Labels"])
+          this.get_video_metadata_iterator(this.assetid, items.cursor, items.results)
+          
+        }
 
       })
      
   }
 
+  get_video_metadata_iterator(assetid, cursor, results:any)
+  {
+    // console.log(results)
+      API.get('DataplaneAPI','/api/metadata/' + assetid + '/labelDetection?cursor=' + cursor,'').then(items=>{
+        if(items.cursor === undefined || items.cursor === null )
+        {
+            this.set_slots_labels(items.results["Labels"])
+            return 
+        }
+        else{
+          this.set_slots_labels(items.results["Labels"])
+          this.get_video_metadata_iterator(assetid, items.cursor, items.results)
+        }
+      })
+
+  }
+
   set_slots_labels(labels){
 
-    let slotnumber = 0
+    //let slotnumber = 0
+    let slotnumber = Math.floor(labels[0].Timestamp/5000)
     let labels_array:any = []
     //console.log(labels)
     labels.forEach(element => {
@@ -207,7 +236,7 @@ found:boolean = false
 
         console.log(element["Label"]["Name"])
 
-        if(Math.floor(element.Timestamp/5000) == slotnumber)
+        if(Math.floor(element.Timestamp/5000) === slotnumber)
         {
           labels_array.push(element["Label"]["Name"])
         }
@@ -217,6 +246,7 @@ found:boolean = false
           this.videol.set(slotnumber,labels_array)
           slotnumber++
           labels_array =[]
+          labels_array.push(element["Label"]["Name"])
 
         }
         
@@ -239,11 +269,7 @@ found:boolean = false
         console.log(items)
         if(items.results["Labels"].length > 0)
         {
-         /* if(items.results["Labels"][0]["Confidence"] > 95)
-          {
-              this.mediainfo.Label.push(items.results["Labels"][0]["Name"])
-              this.get_ad(items.results["Labels"][0]["Name"])
-          } */
+         
         let labels:string[] = []
         items.results["Labels"].forEach(element => {
           if(element["Confidence"] > 95)
@@ -302,20 +328,7 @@ found:boolean = false
 
   
 
-   /* API.get('DataplaneAPI','/api/search?q='+ product,'').then(items=>
-      {
-        console.log(items.hits["total"].value)
-        if(items.hits["total"].value > 0)
-        {
-          this.getblankproduct()
-          console.log(items.hits["hits"][0]["_source"].url)
-          this.addurl = items.hits["hits"][0]["_source"].url
-          this.product.price = items.hits["hits"][0]["_source"].price
-          this.product.url = items.hits["hits"][0]["_source"].url
-          this.product.product = items.hits["hits"][0]["_source"].product
-        }
-        
-      }) */
+  
 
   })
 }
@@ -323,6 +336,20 @@ found:boolean = false
   openadd()
   {
     window.open(this.product.url, "_blank")
+  }
+
+  opendialog()
+  {
+    this.dialog.open(DialogComponent, {data:{assetid:this.assetid}})
+  }
+
+  deleteasset()
+  {
+    this.deleted = false
+    API.del('DataplaneAPI','/api/metadata/'+ this.assetid,'').then(response=>
+      {
+        this.deleted = true
+      })
   }
  
   

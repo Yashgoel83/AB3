@@ -1,1 +1,10 @@
-<p>dialog works!</p>
+
+<div style="overflow-y: auto;">
+<table class="table table-striped">
+   
+    <tr *ngFor="let label of labels">
+        <td>{{label["Name"]}}</td>
+        <td>{{label["Confidence"]}}</td>
+        <td>{{label["TimeStamp"]}}</td>
+    </tr>
+</table>
