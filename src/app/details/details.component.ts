@@ -338,9 +338,9 @@ deleted:boolean = false
     window.open(this.product.url, "_blank")
   }
 
-  opendialog()
+  opendialog(action)
   {
-    this.dialog.open(DialogComponent, {data:{assetid:this.assetid}})
+    this.dialog.open(DialogComponent, {data:{assetid:this.assetid, action:action}})
   }
 
   deleteasset()

@@ -1,5 +1,5 @@
 
-<div style="overflow-y: auto;">
+<div style="overflow-y: scroll; height: 100vh;" *ngIf="error === ''">
 <table class="table table-striped">
    
     <tr *ngFor="let label of labels">
@@ -8,3 +8,6 @@
         <td>{{label["TimeStamp"]}}</td>
     </tr>
 </table>
+</div>
+
+<div *ngIf="error !== ''" style="color: red;">{{error}}</div>

@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   s3key
   jobId = ''
   jobStatus = ''
+  jobcurrentstage = ''
   AssetId = ''
   showprogressbar = false
   mediaType = ''
@@ -170,6 +171,7 @@ API.get('DataplaneAPI','/api/metadata/',{"headers":{"Content-Type":"application/
       {
         console.log(jobresponse.Status)
         this.jobStatus = jobresponse.Status
+        this.jobcurrentstage = jobresponse.CurrentStage
         this.loader.closeAll()
       })
   }

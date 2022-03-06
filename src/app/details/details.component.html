@@ -128,7 +128,9 @@
             <div class="row">
                 
                 <div class=" col-md-6">
-                    <button value="labeldetection" (click)="opendialog()">Show Detected Labels</button>
+                    <button value="labeldetection" (click)="opendialog('label')">Show Detected Labels</button>
+                    <button class="button" value="CelebRecognition" (click)="opendialog('celeb')">Show Celebs</button>
+                    <button class="button" value="textDetection" (click)="opendialog('text')">Show Detected Text</button>
                     <button value="test" (click)="deleteasset()">Delete Asset</button>
                     <p *ngIf="deleted" style="color: red;">Asset Deleted</p>
                 </div>
@@ -154,7 +156,10 @@
             <div class="row">
               
                 <div class=" col-md-6">
-                    <button class="button" value="labeldetection" (click)="opendialog()">Show Detected Labels</button>
+                    <button class="button" value="labeldetection" (click)="opendialog('label')">Show Detected Labels</button>
+                    <button class="button" value="CelebRecognition" (click)="opendialog('celeb')">Show Celebs</button>
+                    <button class="button" value="textDetection" (click)="opendialog('text')">Show Detected Text</button>
+
                     <button value="test" (click)="deleteasset()">Delete Asset</button>
                     <p *ngIf="deleted" style="color: red;">Asset Deleted</p>
                 </div>
@@ -172,5 +177,7 @@
                 <p><button  [value]="product_temp.url" (click)="openadd()">click to buy</button></p>
             </div>
         </div>
+
+
 
        

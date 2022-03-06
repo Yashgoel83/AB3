@@ -32,10 +32,14 @@
       </select>
     <button class="button" mat-raised-button (click)="process()" >Run Workflow</button>
     </div>
-    <div *ngIf="jobId !== ''" class="button">
+    <div *ngIf="jobId !== ''">
+
+      <button class="button" mat-raised-button (click)="getjobstatus()">Get Job Status</button>
+      
       <p>AssetId: {{AssetId}}</p>
-      <button mat-raised-button (click)="getjobstatus()">Get Job Status</button>
+      
       <p>Job Status : {{jobStatus}}</p>
+      <p>Current Stage : {{jobcurrentstage}}</p>
     </div>
     
 
