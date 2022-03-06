@@ -41,6 +41,9 @@
       <p>Job Status : {{jobStatus}}</p>
       <p>Current Stage : {{jobcurrentstage}}</p>
     </div>
+    <br><br>
+    <label>Confidence</label>
+    <input type="number" [(ngModel)]="settings.threshold" placeholder="Confidence Threshold" min="50" max="100">
     
 
     

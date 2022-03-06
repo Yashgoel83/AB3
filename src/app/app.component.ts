@@ -8,6 +8,7 @@ import { AdserviceService } from './adservice.service';
 import { FormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoaderComponent } from './loader/loader.component';
+import { SettingsService } from './settings.service';
 
 
 import awsexports from './../aws-exports';import { concat } from 'rxjs';
@@ -35,7 +36,8 @@ export class AppComponent implements OnInit {
   showprogressbar = false
   mediaType = ''
 
-  constructor(public loader:MatDialog,public authenticator: AuthenticatorService, public router: Router, public route:ActivatedRoute, public adservice:AdserviceService) {
+  constructor(public loader:MatDialog,public authenticator: AuthenticatorService, public router: Router, public route:ActivatedRoute, public adservice:AdserviceService
+    , public settings:SettingsService) {
     Amplify.configure(awsexports);
   }
 

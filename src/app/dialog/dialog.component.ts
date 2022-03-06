@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdserviceService } from '../adservice.service';
 import { LoaderComponent } from '../loader/loader.component';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-dialog',
@@ -18,7 +19,7 @@ export class DialogComponent implements OnInit {
   labels = [{}]
   error = ''
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {assetid: string, action:string}, public adservice:AdserviceService, public dialog:MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {assetid: string, action:string}, public adservice:AdserviceService, public settings:SettingsService) { }
 
   ngOnInit(): void {
     console.log(this.data.assetid)
@@ -37,7 +38,7 @@ export class DialogComponent implements OnInit {
         {
                
         items.results["Labels"].forEach(element => {
-          if(element["Confidence"] > 95)
+          if(element["Confidence"] > this.settings.threshold)
           {
            this.labels.push({"Name":element["Name"], "Confidence":element["Confidence"]})
           }
@@ -67,7 +68,7 @@ export class DialogComponent implements OnInit {
         {
           items.results["CelebrityFaces"].forEach(element => {
 
-            if(element["MatchConfidence"] > 95) {
+            if(element["MatchConfidence"] > this.settings.threshold) {
               this.labels.push({"Name": element["Name"], "Confidence" : element["MatchConfidence"]})
             }
             
@@ -90,7 +91,7 @@ export class DialogComponent implements OnInit {
         {
           items.results["TextDetections"].forEach(element => {
 
-            if(element["Confidence"] > 95) {
+            if(element["Confidence"] > this.settings.threshold) {
               this.labels.push({"Name": element["DetectedText"], "Confidence" : element["Confidence"]})
             }
             
@@ -116,7 +117,7 @@ export class DialogComponent implements OnInit {
         if(items.results["Labels"].length > 0){
           items.results["Labels"].forEach(element => {
 
-            if(element["Label"]["Confidence"] > 95 )
+            if(element["Label"]["Confidence"] > this.settings.threshold )
             {
               this.labels.push({"Name":element["Label"]["Name"], "Confidence":element["Label"]["Confidence"], "TimeStamp":element.Timestamp})
             }
@@ -139,7 +140,7 @@ export class DialogComponent implements OnInit {
         {
           items.results["Celebrities"].forEach(element => {
 
-            if(element["Celebrity"]["Confidence"] > 95) {
+            if(element["Celebrity"]["Confidence"] > this.settings.threshold) {
               this.labels.push({"Name": element["Celebrity"]["Name"], "Confidence" : element["Celebrity"]["Confidence"],"TimeStamp" : element["Timestamp"]})
             }
             
@@ -160,7 +161,7 @@ export class DialogComponent implements OnInit {
         {
           items.results["TextDetections"].forEach(element => {
 
-            if(element["TextDetection"]["Confidence"] > 95) {
+            if(element["TextDetection"]["Confidence"] > this.settings.threshold) {
               this.labels.push({"Name": element["TextDetection"]["DetectedText"], "Confidence" : element["TextDetection"]["Confidence"], "TimeStamp" : element["Timestamp"]})
             }
             

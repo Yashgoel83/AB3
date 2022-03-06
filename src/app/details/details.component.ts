@@ -13,6 +13,7 @@ import { url } from 'inspector';
 import { async } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-details',
@@ -50,7 +51,8 @@ deleted:boolean = false
 
 
 
-  constructor(public dialog:MatDialog,public adservice: AdserviceService,public route:ActivatedRoute, private router:Router, public authenticator:AuthenticatorService, private sanitizer:DomSanitizer) {
+  constructor(public dialog:MatDialog,public adservice: AdserviceService,public route:ActivatedRoute, private router:Router, public authenticator:AuthenticatorService, private sanitizer:DomSanitizer,
+    public settings:SettingsService) {
     this.navigationSubscription = this.router.events.subscribe((e:any)=>
       {
         if(e instanceof NavigationEnd)
@@ -231,7 +233,7 @@ deleted:boolean = false
     labels.forEach(element => {
      
       
-      if(element["Label"]["Confidence"]>95)
+      if(element["Label"]["Confidence"]>this.settings.threshold)
       {
 
         console.log(element["Label"]["Name"])
@@ -272,7 +274,7 @@ deleted:boolean = false
          
         let labels:string[] = []
         items.results["Labels"].forEach(element => {
-          if(element["Confidence"] > 95)
+          if(element["Confidence"] > this.settings.threshold)
           {
             labels.push(element["Name"])
           }
@@ -288,7 +290,7 @@ deleted:boolean = false
           console.log(items)
           if(items.results["TextDetections"].length > 0)
           {
-            if(items.results["TextDetections"][0]["Confidence"] > 99)
+            if(items.results["TextDetections"][0]["Confidence"] > this.settings.threshold)
             {
                 this.mediainfo.DetectedText.push(items.results["TextDetections"][0]["DetectedText"])
             }
